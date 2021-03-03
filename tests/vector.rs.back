@@ -1,0 +1,54 @@
+#[cfg(test)]
+mod column_vector_tests {
+    use dumb_linalg::prelude::{cvec, ColVector};
+
+    macro_rules! op_test {
+        ($op:tt, $opassign:tt, $name1:ident, $name2:ident, $a:expr, $b:expr, $res:expr) => {
+            #[test]
+            fn $name1() {
+                assert_eq!(&$a $op &$b, $res);
+                assert_eq!($a $op $b, $res);
+            }
+
+            #[test]
+            fn $name2() {
+                let mut a = $a;
+                a $opassign $b;
+                assert_eq!(a, $res);
+            }
+        };
+    }
+
+    op_test!(+, +=,
+        vector_scalar_add,
+        vector_scalar_add_assign,
+        cvec![0, 1, 2, 3, 4], 5.0, cvec![5, 6, 7, 8, 9]);
+
+    op_test!(-, -=,
+        vector_scalar_sub,
+        vector_scalar_sub_assign,
+        cvec![0, 1, 2, 3, 4], 5.0, cvec![-5, -4, -3, -2, -1]);
+
+    op_test!(*, *=,
+        vector_scalar_mul,
+        vector_scalar_mul_assign,
+        cvec![0, 1, 2, 3, 4], 5.0, cvec![0, 5, 10, 15, 20]);
+
+    op_test!(/, /=,
+        vector_scalar_div,
+        vector_scalar_div_assign,
+        cvec![0, 1, 2, 3, 4], 5.0, cvec![0, 1.0 / 5.0, 2.0 / 5.0, 3.0 / 5.0, 4.0 / 5.0]);
+
+    op_test!(+, +=,
+        vector_vector_add,
+        vector_vector_add_assign,
+        cvec![0, 1, 2, 3, 4], cvec![5, 6, 7, 8, 9], cvec![5, 7, 9, 11, 13]);
+
+    op_test!(-, -=,
+        vector_vector_sub,
+        vector_vector_sub_assign,
+        cvec![0, 1, 2, 3, 4], cvec![5, 6, 7, 8, 9], cvec![-5, -5, -5, -5, -5]);
+
+    #[test]
+    fn dot_product() {}
+}
